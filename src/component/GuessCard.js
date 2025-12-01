@@ -5,75 +5,44 @@ export default function GuessCard({ guess }) {
 
   const { name, continent, population, area, borders, hint } = guess;
 
-  // Population arrondie au million
-  const roundedPop = Math.round(population / 1_000_000);
+  const roundedPop = Math.round((population || 0) / 1_000_000);
 
-  const boxStyle = (isCorrect) => ({
-    border: "1px solid #ccc",
-    borderRadius: 8,
-    padding: 10,
-    width: "18%",
-    textAlign: "center",
-    background: isCorrect ? "#c8f7c5" : "#f7c5c5"
-  });
-
-  const neutralBox = (isSameMillion = false) => ({
-    border: "1px solid #ccc",
-    borderRadius: 8,
-    padding: 10,
-    width: "18%",
-    textAlign: "center",
-    background: isSameMillion ? "#c8f7c5" : "#f7c5c5"
-  });
-
-  const containerStyle = {
-    display: "flex",
-    justifyContent: "space-between",
-    marginBottom: 15,
-  };
+  const boxClass = (isCorrect) => isCorrect ? "box green" : "box red";
 
   return (
-    <div style={containerStyle}>
-      
+    <div className="guessRow" style={{alignItems:"stretch"}}>
       {/* Nom */}
-      <div style={boxStyle(hint.name.correct)}>
-        <strong>Nom</strong>
-        <br />
-        {name}
+      <div className={hint?.name?.correct ? "box green" : "box red"} style={{flex:"0 0 22%"}}>
+        <div style={{fontSize:12,color:"var(--muted)"}}>Nom</div>
+        <div style={{marginTop:6,fontWeight:600}}>{name}</div>
       </div>
 
       {/* Continent */}
-      <div style={boxStyle(hint.continent.correct)}>
-        <strong>Continent</strong>
-        <br />
-        {continent}
+      <div className={hint?.continent?.correct ? "box green" : "box red"} style={{flex:"0 0 22%"}}>
+        <div style={{fontSize:12,color:"var(--muted)"}}>Continent</div>
+        <div style={{marginTop:6,fontWeight:600}}>{continent}</div>
       </div>
 
-      {/* Population arrondie */}
-      <div style={neutralBox(hint.population.equal || hint.population.sameMillion)}>
-        <strong>Population</strong>
-        <br />
-        {roundedPop} M
-        <div>{hint.population.arrow}</div>
+      {/* Population */}
+      <div className={hint?.population?.equal || hint?.population?.sameMillion ? "box green" : "box neutral"} style={{flex:"0 0 18%"}}>
+        <div style={{fontSize:12,color:"var(--muted)"}}>Population</div>
+        <div style={{marginTop:6,fontWeight:600}}>{roundedPop} M</div>
+        <div style={{marginTop:6,color:"var(--muted)"}}>{hint?.population?.arrow}</div>
       </div>
 
       {/* Superficie */}
-      <div style={neutralBox(hint.area.equal)}>
-        <strong>Superficie</strong>
-        <br />
-        {area.toLocaleString()} km²
-        <div>{hint.area.arrow}</div>
+      <div className={hint?.area?.equal ? "box green" : "box neutral"} style={{flex:"0 0 18%"}}>
+        <div style={{fontSize:12,color:"var(--muted)"}}>Superficie</div>
+        <div style={{marginTop:6,fontWeight:600}}>{(area || 0).toLocaleString()} km²</div>
+        <div style={{marginTop:6,color:"var(--muted)"}}>{hint?.area?.arrow}</div>
       </div>
-
 
       {/* Frontières */}
-      <div style={neutralBox(hint.borders.equal)}>
-        <strong>Frontières</strong>
-        <br />
-        {borders}
-        <div>{hint.borders.arrow}</div>
+      <div className={hint?.borders?.equal ? "box green" : "box neutral"} style={{flex:"0 0 18%"}}>
+        <div style={{fontSize:12,color:"var(--muted)"}}>Frontières</div>
+        <div style={{marginTop:6,fontWeight:600}}>{borders ?? 0}</div>
+        <div style={{marginTop:6,color:"var(--muted)"}}>{hint?.borders?.arrow}</div>
       </div>
-
     </div>
   );
 }
