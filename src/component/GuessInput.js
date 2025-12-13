@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function GuessInput({ onGuess, disabled, countries }) {
+export default function GuessInput({ onGuess, disabled, countries, guesses = [] }) {
   const [input, setInput] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(-1); // 🔥 nouvel état
@@ -53,13 +53,15 @@ export default function GuessInput({ onGuess, disabled, countries }) {
       .toLowerCase();
 
     const filtered = (countries || [])
-      .filter((c) =>
-        c.name
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .toLowerCase()
-          .includes(normalizedVal)
-      )
+    .filter((c) =>
+      c.name
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .includes(normalizedVal)
+    )
+    .filter(c => !guesses.some(g => g.name === c.name));
+
 
     setSuggestions(filtered);
   };

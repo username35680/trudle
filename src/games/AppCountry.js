@@ -134,7 +134,8 @@ function App() {
       <GuessInput
         onGuess={handleGuess}
         disabled={gameWon}
-        countries={countries} // nécessaire pour l'autocomplete
+        countries={countries}
+        guesses={guesses} // nécessaire pour l'autocomplete
       />
 
       {/* hint box */}
@@ -149,7 +150,9 @@ function App() {
       {showFlag && target?.flag && (
         <div className="flagWrap">
           <div style={{fontSize:13,color:"var(--muted)",marginBottom:8}}>Indice : drapeau</div>
-          <img src={target.flag} alt="flag" />
+          <img src={target.flag} alt="flag"style={{
+            filter: hintUnlocked ? "blur(10px)" : "none"
+          }} />
         </div>
       )}
 

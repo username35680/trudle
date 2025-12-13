@@ -75,20 +75,24 @@ html,body,#root{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,S
 }
 
 /* header menu dropdown (mobile full width) */
-.header-menu{
-  position:absolute;
-  right:16px;
-  top:64px;
-  min-width:220px;
-  background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
-  border:1px solid rgba(255,255,255,0.05);
-  padding:8px;
-  border-radius:10px;
-  display:none;
-  flex-direction:column;
-  gap:8px;
-  z-index:70;
+.header-menu {
+  position: fixed;
+  top: 64px;
+  min-width: 220px;
+
+  background: linear-gradient(180deg, rgba(20,14,30,0.95), rgba(20,14,30,0.9));
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 10px;
+  border-radius: 12px;
+
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+  z-index: 999;
 }
+
 .header-menu.open{display:flex}
 .menu-item{
   background:transparent;border:0;color:white;padding:10px 12px;text-align:left;border-radius:8px;cursor:pointer;
@@ -174,4 +178,33 @@ html,body,#root{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,S
   .trudle-main{ padding-top:88px }
   .game-visual{ width:88px;height:88px;font-size:36px }
   .game-card{ min-height:200px;padding:18px }
+}
+/* Animation des cartes — fade + slide + zoom */
+@keyframes cardEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(15px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Appliquer l'animation aux cartes */
+.games-grid .game-card,
+.games-grid .game-card.disabled {
+  opacity: 0;
+  animation: cardEnter 0.6s ease-out forwards;
+}
+
+/* Décalage (stagger) entre les cartes */
+.games-grid .game-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.games-grid .game-card:nth-child(2) {
+  animation-delay: 0.25s;
+}
+.games-grid .game-card:nth-child(3) {
+  animation-delay: 0.4s;
 }

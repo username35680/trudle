@@ -49,3 +49,22 @@ export function normalize(str = "") {
     .replace(/[^a-z0-9]/g, ""); // seulement alphanumérique
 }
 
+export function getAnimeHints(target, guess) {
+  return {
+    name: { correct: guess.name === target.name },
+    year: {
+      equal: guess.year === target.year,
+      arrow: guess.year < target.year ? "↑" : guess.year > target.year ? "↓" : ""
+    },
+    episodes: {
+      equal: guess.episodes === target.episodes,
+      arrow: guess.episodes < target.episodes ? "↑" : guess.episodes > target.episodes ? "↓" : ""
+    },
+    genre: { correct: guess.genre === target.genre },
+    popularity: {
+      equal: guess.popularity === target.popularity,
+      arrow: guess.popularity < target.popularity ? "↑" : guess.popularity > target.popularity ? "↓" : ""
+    }
+  };
+}
+

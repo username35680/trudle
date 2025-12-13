@@ -1,18 +1,18 @@
 :root{
   --bg:#ffffff;
-  --bg-alpha: rgba(255,255,255,0.85);
+  --bg-alpha: rgba(255,255,255,0.98);
   --card:#f7f7f7;
   --text:#111;
   --muted:#666;
   --accent:#2b8aef;
-  --green:#c8f7c5;
-  --red:#f7c5c5;
+  --green:#91f48a;
+  --red:#f29999;
   --neutral:#eeeeee;
 }
 
 [data-theme="dark"]{
   --bg:#0f1720;
-  --bg-alpha: rgba(15,23,32,0.85);
+  --bg-alpha: rgba(15,23,32,0.98);
   --card:#0b1220;
   --text:#e6eef8;
   --muted:#9fb0c8;
@@ -28,15 +28,24 @@
 }
 
 html, body {
-  height: 90%;
+  height: 100%;
   margin: 0;
   padding: 0;
-  background-image: url("/public/datasets/map-monde.jpg"); /* image de fond */
+  color: var(--text);
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
   background-repeat: no-repeat;
-  color: var(--text);
+}
+
+/* 🌍 Pays */
+body.bg-country {
+  background-image: url("/src/datasets/map-monde.jpg");
+}
+
+/* 🎌 Animé */
+body.bg-anime {
+  background-image: url("/src/datasets/anime.png");
 }
 
 #root {
@@ -117,20 +126,51 @@ button.ghost{
 }
 
 /* Hint box grise */
-.hintBox{
-  background:var(--neutral);
-  padding:12px;
-  border-radius:10px;
-  margin-bottom:12px;
-  text-align:center;
-  color:var(--muted);
-  cursor:not-allowed;
-  user-select:none;
+.hintsRow {
+  display: flex;
+  gap: 12px;
+  margin: 12px 0 16px;
+  width: 100%;
 }
-.hintBox.unlocked{
-  cursor:pointer;
-  opacity:1;
+
+.hintBox {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  text-align: center;
+  cursor: default;
+  background: rgba(255,255,255,0.06);
+  color: var(--muted);
+  border: 1px dashed rgba(255,255,255,0.25);
 }
+
+.hintBox.unlocked {
+  cursor: pointer;
+  color: var(--text);
+  border-style: solid;
+  background: rgba(124,58,237,0.15);
+}
+
+.hintReveal {
+  margin: 8px auto 16px;
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.05);
+  text-align: center;
+}
+
+.hintTitle {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.hintText {
+  font-size: 14px;
+  line-height: 1.45;
+}
+
 
 /* Flag preview */
 .flagWrap{
@@ -229,4 +269,43 @@ button.ghost{
   .guessRow{flex-direction:column;}
   .box{width:100%}
   .searchRow{flex-direction:column;align-items:flex-start;}
+}
+.synopsisBox {
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  max-width: 520px;
+}
+
+.synopsisHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.badge {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(120, 120, 255, 0.15);
+  color: #9aa4ff;
+}
+
+.synopsisText {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.blur {
+  filter: blur(4px);
+  transition: filter 0.3s;
+  cursor: help;
+}
+
+.blur:hover {
+  filter: blur(0);
 }

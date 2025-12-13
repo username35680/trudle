@@ -1,6 +1,5 @@
 import React from "react";
 import "./HomePage.css";
-import mapImg from "./datasets/map-monde.jpg"; // <-- vérifie le chemin (src/dataset/map-monde.png)
 
 export default function HomePage({ onSelectGame }) {
   return (
@@ -8,7 +7,6 @@ export default function HomePage({ onSelectGame }) {
       {/* background image */}
       <div
         className="trudle-map"
-        style={{ backgroundImage: `url(${mapImg})` }}
         aria-hidden
       />
 
@@ -21,6 +19,7 @@ export default function HomePage({ onSelectGame }) {
         </p>
 
         <section className="games-grid" aria-label="Jeux disponibles">
+          {/* Jeu Pays */}
           <button
             className="game-card"
             onClick={() => onSelectGame("country")}
@@ -30,14 +29,17 @@ export default function HomePage({ onSelectGame }) {
             <div className="game-label">Pays</div>
           </button>
 
-          {/* Placeholder - tu pourras dupliquer pour d'autres jeux */}
-          <div className="game-card disabled" title="Bientôt">
-            <div className="game-visual">🏳️</div>
-            <div className="game-label">Drapeaux (bientôt)</div>
-          </div>
+          {/* 👉 Nouveau jeu : Animé */}
+          <button
+            className="game-card"
+            onClick={() => onSelectGame("anime")}
+            title="Jouer au jeu des Animés"
+          >
+            <div className="game-visual">🎌</div>
+            <div className="game-label">Animé</div>
+          </button>
+          
         </section>
-
-        <div className="footer-note">Fais 5 essais pour débloquer l'indice</div>
       </main>
     </div>
   );
