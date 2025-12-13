@@ -21,7 +21,6 @@ export default function AppAnime() {
     // reset du jeu
     setGuesses([]);
     setGameWon(false);
-    setHintUnlocked(false);
     setSynopsisUnlocked(false);
     setImageUnlocked(false);
     setShowImage(false);
