@@ -7,8 +7,6 @@ export default function GuessCard({ guess }) {
 
   const roundedPop = Math.round((population || 0) / 1_000_000);
 
-  const boxClass = (isCorrect) => isCorrect ? "box green" : "box red";
-
   return (
     <div className="guessRow" style={{alignItems:"stretch"}}>
       {/* Nom */}

@@ -11,7 +11,6 @@ export default function AppAnime() {
   const [guesses, setGuesses] = useState([]);
   const [gameWon, setGameWon] = useState(false);
   const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "light");
-  const [hintUnlocked, setHintUnlocked] = useState(false);
   const [showImage, setShowImage] = useState(false);
   const [synopsisUnlocked, setSynopsisUnlocked] = useState(false);
   const [imageUnlocked, setImageUnlocked] = useState(false);
