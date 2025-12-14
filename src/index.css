@@ -316,6 +316,7 @@ button.ghost{
     margin: 12px;
     padding: 16px;
     border-radius: 10px;
+    margin-top: 15%;
   }
 
   /* Header */
@@ -402,28 +403,18 @@ button.ghost{
 }
 /* 📱 GuessCard horizontal sur mobile */
 @media (max-width: 640px) {
-
   .guessRow {
     flex-direction: row !important;
-    overflow-x: auto;
     gap: 8px;
     padding-bottom: 6px;
-    -webkit-overflow-scrolling: touch;
   }
-
-  /* scrollbar discrète */
-  .guessRow::-webkit-scrollbar {
-    height: 6px;
-  }
-
-  .guessRow::-webkit-scrollbar-thumb {
-    background: rgba(0,0,0,0.2);
-    border-radius: 999px;
+  .guessArea{ 
+  overflow-x: auto;
   }
 
   /* Chaque box garde une largeur fixe */
   .guessRow .box {
-    flex: 0 0 140px;
-    min-width: 140px;
+    flex: 0 0 100px;
+    min-width: 100px;
   }
 }
