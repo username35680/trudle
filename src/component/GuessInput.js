@@ -103,33 +103,11 @@ export default function GuessInput({ onGuess, disabled, countries, guesses = [] 
         />
 
         {suggestions.length > 0 && (
-          <div
-            style={{
-              position: "absolute",
-              top: "100%",
-              left: 0,
-              right: 0,
-              backgroundColor: "var(--card)",
-              border: "1px solid rgba(0,0,0,0.1)",
-              borderTop: "none",
-              borderRadius: "0 0 6px 6px",
-              zIndex: 10,
-              maxHeight: 200,
-              overflowY: "auto",
-            }}
-          >
+          <div className="suggestionsBox">
             {suggestions.map((s, i) => (
               <div
                 key={i}
-                style={{
-                  padding: "6px 10px",
-                  cursor: "pointer",
-                  background:
-                    i === selectedIndex
-                      ? "var(--accent)"
-                      : "transparent",
-                  color: i === selectedIndex ? "white" : "inherit",
-                }}
+                className={`suggestionItem ${i === selectedIndex ? "active" : ""}`}
                 onMouseDown={() => {
                   onGuess(s.name);
                   resetInput();
@@ -141,6 +119,7 @@ export default function GuessInput({ onGuess, disabled, countries, guesses = [] 
             ))}
           </div>
         )}
+
 
         <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
           <button type="submit" className="primary" disabled={disabled}>

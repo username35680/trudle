@@ -264,6 +264,30 @@ button.ghost{
   margin-bottom:8px;
 }
 
+.suggestionsBox {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--card);
+  border: 1px solid rgba(0,0,0,0.1);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  z-index: 10;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.suggestionItem {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.suggestionItem.active {
+  background: var(--accent);
+  color: white;
+}
+
 /* small responsive */
 @media (max-width:640px){
   .guessRow{flex-direction:column;}
@@ -416,5 +440,10 @@ button.ghost{
   .guessRow .box {
     flex: 0 0 100px;
     min-width: 100px;
+  }
+  .suggestionsBox {
+    position: static; /* 🔥 clé ici */
+    margin-top: 6px;
+    border-radius: 8px;
   }
 }
