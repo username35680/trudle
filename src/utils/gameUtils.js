@@ -50,21 +50,68 @@ export function normalize(str = "") {
 }
 
 export function getAnimeHints(target, guess) {
+  const targetOngoing = target.episodes == null;
+  const guessOngoing = guess.episodes == null;
+
+  let episodesHint;
+
+  // 🟢 les deux animés sont en cours
+  if (targetOngoing && guessOngoing) {
+    episodesHint = {
+      equal: true,
+      arrow: "=",
+      ongoing: true
+    };
+  }
+  // ❓ un seul des deux est en cours
+  else if (targetOngoing || guessOngoing) {
+    episodesHint = {
+      equal: false,
+      arrow: "?",
+      ongoing: true
+    };
+  }
+  // 🔢 comparaison normale
+  else {
+    episodesHint = {
+      equal: guess.episodes === target.episodes,
+      arrow:
+        guess.episodes < target.episodes
+          ? "↑"
+          : guess.episodes > target.episodes
+          ? "↓"
+          : "=",
+      ongoing: false
+    };
+  }
+
   return {
     name: { correct: guess.name === target.name },
+
     year: {
       equal: guess.year === target.year,
-      arrow: guess.year < target.year ? "↑" : guess.year > target.year ? "↓" : ""
+      arrow:
+        guess.year < target.year
+          ? "↑"
+          : guess.year > target.year
+          ? "↓"
+          : "="
     },
-    episodes: {
-      equal: guess.episodes === target.episodes,
-      arrow: guess.episodes < target.episodes ? "↑" : guess.episodes > target.episodes ? "↓" : ""
-    },
+
+    episodes: episodesHint,
+
     genre: { correct: guess.genre === target.genre },
+
     popularity: {
       equal: guess.popularity === target.popularity,
-      arrow: guess.popularity < target.popularity ? "↑" : guess.popularity > target.popularity ? "↓" : ""
+      arrow:
+        guess.popularity < target.popularity
+          ? "↑"
+          : guess.popularity > target.popularity
+          ? "↓"
+          : "="
     }
   };
 }
+
 

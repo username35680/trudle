@@ -22,9 +22,9 @@ export default function GuessCardAnime({ guess }) {
       </div>
 
       {/* Episodes */}
-      <div className={hint?.episodes?.equal ? "box green" : "box neutral"} style={{flex:"0 0 17%"}}>
+      <div className={hint?.episodes?.equal ? "box green" : hint?.episodes?.arrow === "?" ? "box neutral" : "box red"} style={{flex:"0 0 17%"}}>
         <div style={{ fontSize: 12, color: "var(--muted)" }}>Épisodes</div>
-        <strong>{episodes}</strong>
+        <strong>{episodes === null ? "En cours" : episodes}</strong>
         <div>{hint?.episodes?.arrow}</div>
       </div>
 

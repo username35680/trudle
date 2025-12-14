@@ -16,6 +16,7 @@ export default function AppAnime() {
   const [imageUnlocked, setImageUnlocked] = useState(false);
   const [showSynopsis, setShowSynopsis] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const ANIME_CACHE_KEY = "animeList_v1";
 
   const handleReplay = () => {
     // reset du jeu
@@ -40,58 +41,83 @@ export default function AppAnime() {
     }, [theme]);
 
     useEffect(() => {
-    async function load() {
+      async function load() {
         setLoading(true);
-        const query = `
-        query {
-            Page(perPage: 150) {
-            media(type: ANIME, sort: POPULARITY_DESC) {
-              id
-              title {
-                romaji
-                english
-                native
-              }
-              description
-              episodes
-              genres
-              startDate {
-                year
-              }
-              coverImage {
-                medium
-              }
-              popularity
-            }
-            }
+
+        // 🔥 1️⃣ Vérifie le cache
+        const cached = localStorage.getItem(ANIME_CACHE_KEY);
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          console.log("Animés chargés depuis le cache :", parsed.length);
+
+          setAnimeList(parsed);
+          setTarget(parsed[Math.floor(Math.random() * parsed.length)]);
+          setLoading(false);
+          return;
         }
-        `;
 
-        const response = await fetch("https://graphql.anilist.co", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query })
-        });
+        // 🔄 2️⃣ Sinon → fetch API
+        let allAnime = [];
+        let page = 1;
+        const perPage = 50;
+        const maxPages = 5;
 
-        const json = await response.json();
-        const list = json.data.Page.media.map(a => ({
-          name: a.title.english || a.title.romaji || a.title.native,
-          year: a.startDate.year || 0,
-          episodes: a.episodes || 0,
-          genre: a.genres?.[0] || "Inconnu",
-          image: a.coverImage.medium,
-          popularity: a.popularity || 0,
-          synopsis: cleanSynopsis(a.description)
-        }));
+        while (page <= maxPages) {
+          const query = `
+            query ($page: Int, $perPage: Int) {
+              Page(page: $page, perPage: $perPage) {
+                media(type: ANIME, sort: POPULARITY_DESC) {
+                  title { romaji english native }
+                  description
+                  episodes
+                  genres
+                  startDate { year }
+                  coverImage { medium }
+                  popularity
+                }
+              }
+            }
+          `;
 
+          const response = await fetch("https://graphql.anilist.co", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              query,
+              variables: { page, perPage }
+            })
+          });
 
-        setAnimeList(list);
-        setTarget(list[Math.floor(Math.random() * list.length)]);
+          const json = await response.json();
+
+          const pageData = json.data.Page.media.map(a => ({
+            name: a.title.english || a.title.romaji || a.title.native,
+            year: a.startDate.year || 0,
+            episodes: a.episodes ?? null,
+            genre: a.genres?.[0] || "Inconnu",
+            image: a.coverImage.medium,
+            popularity: a.popularity || 0,
+            synopsis: cleanSynopsis(a.description)
+          }));
+
+          allAnime = [...allAnime, ...pageData];
+          page++;
+        }
+
+        console.log("Animés chargés depuis l’API :", allAnime.length);
+
+        // 💾 3️⃣ Sauvegarde en cache
+        localStorage.setItem(ANIME_CACHE_KEY, JSON.stringify(allAnime));
+
+        setAnimeList(allAnime);
+        setTarget(allAnime[Math.floor(Math.random() * allAnime.length)]);
         setLoading(false);
-    }
+      }
 
-    load();
+      load();
     }, []);
+
+
 
 const handleGuess = (name) => {
   if (gameWon || !target) return;
@@ -125,8 +151,8 @@ const handleGuess = (name) => {
 
   setGuesses(prev => {
     const next = [...prev, entry];
-    if (next.length >= 3) setSynopsisUnlocked(true);
-    if (next.length >= 5) setImageUnlocked(true);
+    if (next.length >= 5) setSynopsisUnlocked(true);
+    if (next.length >= 3) setImageUnlocked(true);
     return next;
   });
 
@@ -175,16 +201,6 @@ function cleanSynopsis(text = "") {
         guesses={guesses} // autocomplete OK
       />
       <div className="hintsRow">
-        {/* Indice synopsis */}
-        <div
-          className={`hintBox ${synopsisUnlocked ? "unlocked" : ""}`}
-          onClick={() => synopsisUnlocked && setShowSynopsis(s => !s)}
-        >
-          {synopsisUnlocked
-            ? "Indice : synopsis (cliquer)"
-            : "Indice synopsis — 3 essais"}
-        </div>
-
         {/* Indice image */}
         <div
           className={`hintBox ${imageUnlocked ? "unlocked" : ""}`}
@@ -192,7 +208,16 @@ function cleanSynopsis(text = "") {
         >
           {imageUnlocked
             ? "Indice : image (cliquer)"
-            : "Indice image — 5 essais"}
+            : "Indice image — 3 essais"}
+        </div>
+        {/* Indice synopsis */}
+        <div
+          className={`hintBox ${synopsisUnlocked ? "unlocked" : ""}`}
+          onClick={() => synopsisUnlocked && setShowSynopsis(s => !s)}
+        >
+          {synopsisUnlocked
+            ? "Indice : synopsis (cliquer)"
+            : "Indice synopsis — 5 essais"}
         </div>
       </div>
       {showSynopsis && target?.synopsis && (
@@ -208,7 +233,7 @@ function cleanSynopsis(text = "") {
           <img
             src={target.image}
             alt="anime cover"
-            style={{ borderRadius: 8, maxWidth: 220 }}
+            style={{ borderRadius: 8, maxWidth: 220, filter: gameWon ? "none" : "blur(4px)",}}
           />
         </div>
       )}
