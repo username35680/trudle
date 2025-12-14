@@ -309,3 +309,121 @@ button.ghost{
 .blur:hover {
   filter: blur(0);
 }
+/* 📱 Mobile first */
+@media (max-width: 480px) {
+
+  .app {
+    margin: 12px;
+    padding: 16px;
+    border-radius: 10px;
+  }
+
+  /* Header */
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .title {
+    gap: 10px;
+  }
+
+  .logo {
+    width: 38px;
+    height: 38px;
+    font-size: 14px;
+  }
+
+  /* Input */
+  .searchRow {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    font-size: 16px; /* important pour éviter le zoom iOS */
+  }
+
+  button.primary,
+  button.ghost {
+    width: 100%;
+    padding: 12px;
+    font-size: 15px;
+  }
+
+  /* Hints */
+  .hintsRow {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .hintBox {
+    font-size: 14px;
+    padding: 12px;
+  }
+
+  .hintReveal {
+    width: 100%;
+    padding: 14px;
+  }
+
+  /* Guesses */
+  .guessRow {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .box {
+    font-size: 15px;
+    padding: 12px;
+  }
+
+  /* Flag */
+  .flagWrap img {
+    width: 120px;
+  }
+
+  /* Synopsis */
+  .synopsisBox {
+    max-width: 100%;
+    padding: 14px;
+  }
+
+  .synopsisText {
+    font-size: 15px;
+  }
+
+  /* Modal */
+  .modal {
+    padding: 18px;
+  }
+}
+/* 📱 GuessCard horizontal sur mobile */
+@media (max-width: 640px) {
+
+  .guessRow {
+    flex-direction: row !important;
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 6px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* scrollbar discrète */
+  .guessRow::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .guessRow::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.2);
+    border-radius: 999px;
+  }
+
+  /* Chaque box garde une largeur fixe */
+  .guessRow .box {
+    flex: 0 0 140px;
+    min-width: 140px;
+  }
+}
