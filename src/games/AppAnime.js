@@ -16,7 +16,18 @@ export default function AppAnime() {
   const [imageUnlocked, setImageUnlocked] = useState(false);
   const [showSynopsis, setShowSynopsis] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const [gameOver, setGameOver] = useState(false);
   const ANIME_CACHE_KEY = "animeList_v1";
+
+  const handleGiveUp = () => {
+    if (!target) return;
+
+    setGameOver(true);
+    setShowImage(true);
+    setShowSynopsis(true);
+    setShowPopup(true);
+  };
+
 
   const handleReplay = () => {
     // reset du jeu
@@ -60,7 +71,7 @@ export default function AppAnime() {
         let allAnime = [];
         let page = 1;
         const perPage = 50;
-        const maxPages = 5;
+        const maxPages = 4;
 
         while (page <= maxPages) {
           const query = `
@@ -120,7 +131,7 @@ export default function AppAnime() {
 
 
 const handleGuess = (name) => {
-  if (gameWon || !target) return;
+  if (gameWon || gameOver || !target) return;
 
   const normalized = normalize(name);
   const found = animeList.find(a => normalize(a.name) === normalized);
@@ -191,7 +202,15 @@ function cleanSynopsis(text = "") {
             >
             {theme === "dark" ? "Clair" : "Sombre"}
             </button>
+            <button
+            className="ghost"
+            onClick={handleGiveUp}
+            disabled={gameWon || gameOver}
+          >
+            Abandonner
+          </button>
         </div>
+
         </div>
     
       <GuessInput
@@ -233,7 +252,7 @@ function cleanSynopsis(text = "") {
           <img
             src={target.image}
             alt="anime cover"
-            style={{ borderRadius: 8, maxWidth: 220, filter: gameWon ? "none" : "blur(4px)",}}
+            style={{ borderRadius: 8, maxWidth: 220, filter: (gameWon || gameOver) ? "none" : "blur(4px)",}}
           />
         </div>
       )}
@@ -241,7 +260,9 @@ function cleanSynopsis(text = "") {
       {showPopup && (
         <div className="modalOverlay">
           <div className="modal">
-            <h2 style={{ marginTop: 0 }}>🎉 Bravo !</h2>
+            <h2 style={{ marginTop: 0 }}>
+              {gameWon ? "🎉 Bravo !" : "😢 Partie abandonnée"}
+            </h2>
             <p>Le anime était <strong>{target?.name}</strong>.</p>
             <div style={{ display: "flex", gap: 8, justifyContent: "center", marginTop: 12 }}>
               <button className="primary" onClick={handleReplay}>Rejouer</button>
