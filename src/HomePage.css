@@ -208,3 +208,6 @@ html,body,#root{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,S
 .games-grid .game-card:nth-child(3) {
   animation-delay: 0.4s;
 }
+.games-grid .game-card:nth-child(4) {
+  animation-delay: 0.55s;
+}

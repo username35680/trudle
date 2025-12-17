@@ -33,6 +33,7 @@ export default function AppAnime() {
     // reset du jeu
     setGuesses([]);
     setGameWon(false);
+    setGameOver(false);
     setSynopsisUnlocked(false);
     setImageUnlocked(false);
     setShowImage(false);

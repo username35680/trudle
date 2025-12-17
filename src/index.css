@@ -47,6 +47,9 @@ body.bg-country {
 body.bg-anime {
   background-image: url("/src/datasets/anime.png");
 }
+body.bg-chronomix {
+  background-image: url("/src/datasets/frise.png");
+}
 
 #root {
   height: 100%;
@@ -446,4 +449,104 @@ button.ghost{
     margin-top: 6px;
     border-radius: 8px;
   }
+}
+/* Board */
+.chronoBoard {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin: 16px 0;
+}
+
+/* Slots */
+.chronoSlot {
+  width: 140px;
+  height: 90px;
+  border: 2px dashed #aaa;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.chronoSlot.over {
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.12);
+}
+
+/* Card container */
+.chronoCard {
+  width: 140px;
+  height: 90px;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+/* Flip wrapper */
+.chronoCardInner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+/* Flip state */
+.chronoCard.flipped .chronoCardInner {
+  transform: rotateY(180deg);
+}
+
+/* Front & Back */
+.chronoCardFront,
+.chronoCardBack {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0 6px 18px rgba(0,0,0,.12);
+}
+
+/* Front */
+.chronoCardFront {
+  background: var(--card);
+}
+
+/* Back */
+.chronoCardBack {
+  background: #222;
+  color: white;
+  transform: rotateY(180deg);
+  font-size: 0.85rem;
+}
+
+/* Text */
+.chronoTitle {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.chronoCategory {
+  font-size: 12px;
+  color: var(--muted);
+}
+.chronoSlotHitbox {
+  width: 100%;
+  height: 100%;
+}
+.slotContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chronoSlotDate {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 600;
 }

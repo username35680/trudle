@@ -114,4 +114,43 @@ export function getAnimeHints(target, guess) {
   };
 }
 
+export function getMovieHints(target, guess) {
+  return {
+    name: { correct: guess.name === target.name },
+
+    year: {
+      equal: guess.year === target.year,
+      arrow:
+        guess.year < target.year
+          ? "↑"
+          : guess.year > target.year
+          ? "↓"
+          : "="
+    },
+
+    duration: {
+      equal: guess.duration === target.duration,
+      arrow:
+        guess.duration < target.duration
+          ? "↑"
+          : guess.duration > target.duration
+          ? "↓"
+          : "="
+    },
+
+    genre: {
+      correct: guess.genre === target.genre
+    },
+
+    popularity: {
+      equal: Math.round(guess.popularity) === Math.round(target.popularity),
+      arrow:
+        guess.popularity < target.popularity
+          ? "↑"
+          : guess.popularity > target.popularity
+          ? "↓"
+          : "="
+    }
+  };
+}
 
