@@ -212,7 +212,7 @@ function cleanSynopsis(text = "") {
           </button>
         </div>
 
-        </div>
+      </div>
     
       <GuessInput
         onGuess={handleGuess}

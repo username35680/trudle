@@ -526,8 +526,8 @@ button.ghost{
 
 /* Text */
 .chronoTitle {
+  font-size: 14px;
   font-weight: 600;
-  margin-bottom: 6px;
 }
 
 .chronoCategory {
@@ -549,4 +549,13 @@ button.ghost{
   font-size: 12px;
   color: var(--muted);
   font-weight: 600;
+}
+.chronoCardFront.correct {
+  background-color: var(--green); /* vert */
+  color: white; /* texte lisible */
+}
+
+.chronoCardFront.wrong {
+  background-color: var(--red); /* rouge */
+  color: white;
 }
