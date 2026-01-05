@@ -50,6 +50,9 @@ body.bg-anime {
 body.bg-chronomix {
   background-image: url("/src/datasets/frise.png");
 }
+body.bg-whoami {
+  background-image: url("/src/datasets/whoiam.png");
+}
 
 #root {
   height: 100%;
