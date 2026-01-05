@@ -6,11 +6,12 @@ import TrudleHeader from "./TrudleHeader";
 import AppCountry from "./games/AppCountry"; 
 import AppAnime from "./games/AppAnime"; 
 import AppChronoMix from "./games/AppChronoMix";
+import AppWhoAmI from "./games/AppWhoAmI";
 
 export default function App() {
   const [currentGame, setCurrentGame] = useState(null);
 
-  const games = [{ id: "country", label: "Pays" },{ id: "anime", label: "Animé" },{ id: "chronomix", label: "ChronoMix" }];
+  const games = [{ id: "country", label: "Pays" },{ id: "anime", label: "Animé" },{ id: "chronomix", label: "ChronoMix" },{ id: "whoami", label: "Qui suis-je ?" }];
 
   const goHome = () => setCurrentGame(null);
 
@@ -18,7 +19,8 @@ export default function App() {
     document.body.classList.remove(
       "bg-country",
       "bg-anime",
-      "bg-chronomix"
+      "bg-chronomix",
+      "bg-whoami"
     );
 
     if (currentGame === "country") {
@@ -27,6 +29,8 @@ export default function App() {
       document.body.classList.add("bg-anime");
     } else if (currentGame === "chronomix") {
       document.body.classList.add("bg-chronomix");
+    } else if (currentGame === "whoami") {
+      document.body.classList.add("bg-whoami");
     }
   }, [currentGame]);
 
@@ -37,14 +41,17 @@ export default function App() {
       <TrudleHeader onHomeClick={goHome} games={games} onSelectGame={setCurrentGame} />
 
           {currentGame === "anime" ? (
-              <AppAnime />
-            ) : currentGame === "country" ? (
-              <AppCountry />
-            ) : currentGame === "chronomix" ? (
-              <AppChronoMix />
-            ) : (
-              <HomePage onSelectGame={setCurrentGame} />
-            )}
+            <AppAnime />
+          ) : currentGame === "country" ? (
+            <AppCountry />
+          ) : currentGame === "chronomix" ? (
+            <AppChronoMix />
+          ) : currentGame === "whoami" ? (
+            <AppWhoAmI />
+          ) : (
+            <HomePage onSelectGame={setCurrentGame} />
+          )}
+
 
 
 

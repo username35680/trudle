@@ -47,6 +47,15 @@ export default function HomePage({ onSelectGame }) {
             <div className="game-visual">⏳</div>
             <div className="game-label">ChronoMix</div>
           </button>
+          {/* 👤 Nouveau jeu : Qui suis-je */}
+          <button
+            className="game-card"
+            onClick={() => onSelectGame("whoami")}
+            title="Jouer à Qui suis-je ?"
+          >
+            <div className="game-visual">👤</div>
+            <div className="game-label">Qui suis-je ?</div>
+          </button>
 
         </section>
       </main>
