@@ -7,11 +7,18 @@ import AppCountry from "./games/AppCountry";
 import AppAnime from "./games/AppAnime"; 
 import AppChronoMix from "./games/AppChronoMix";
 import AppWhoAmI from "./games/AppWhoAmI";
+import AppMiniRPG from "./games/miniRPG/AppMiniRPG";
 
 export default function App() {
   const [currentGame, setCurrentGame] = useState(null);
 
-  const games = [{ id: "country", label: "Pays" },{ id: "anime", label: "Animé" },{ id: "chronomix", label: "ChronoMix" },{ id: "whoami", label: "Qui suis-je ?" }];
+  const games = [
+    { id: "country", label: "Pays" },
+    { id: "anime", label: "Animé" },
+    { id: "chronomix", label: "ChronoMix" },
+    { id: "whoami", label: "Qui suis-je ?" },
+    { id: "rpg", label: "Mini RPG" },
+  ];
 
   const goHome = () => setCurrentGame(null);
 
@@ -48,9 +55,12 @@ export default function App() {
             <AppChronoMix />
           ) : currentGame === "whoami" ? (
             <AppWhoAmI />
+          ) : currentGame === "rpg" ? (
+            <AppMiniRPG />
           ) : (
             <HomePage onSelectGame={setCurrentGame} />
           )}
+
 
 
 

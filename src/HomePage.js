@@ -56,6 +56,14 @@ export default function HomePage({ onSelectGame }) {
             <div className="game-visual">👤</div>
             <div className="game-label">Qui suis-je ?</div>
           </button>
+          <button
+            className="game-card"
+            onClick={() => onSelectGame("rpg")}
+            title="Jouer au Mini RPG"
+          >
+            <div className="game-visual">🗺️</div>
+            <div className="game-label">Mini RPG</div>
+          </button>
 
         </section>
       </main>
