@@ -14,9 +14,9 @@ export default function HomePage({ onSelectGame }) {
       <main className="trudle-main">
         <h1 className="trudle-title">TRUDLE</h1>
 
-        <p className="trudle-sub">
+        <h2 className="trudle-sub">
           Jeux à thème — devine, apprends et challenge-toi
-        </p>
+        </h2>
 
         <section className="games-grid" aria-label="Jeux disponibles">
           {/* Jeu Pays */}
