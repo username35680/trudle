@@ -1,7 +1,7 @@
 // components/ChronoBoard.jsx
-import { DndContext, closestCenter } from "@dnd-kit/core";
+import { DndContext } from "@dnd-kit/core";
 import { pointerWithin } from "@dnd-kit/core";
-import { SortableContext, arrayMove, horizontalListSortingStrategy } from "@dnd-kit/sortable";
+import { SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortable";
 import ChronoCard from "./ChronoCard";
 import ChronoSlot from "./ChronoSlot";
 
