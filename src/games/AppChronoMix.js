@@ -5,21 +5,21 @@ import ChronoBoard from "../component/ChronoBoard";
 
 export default function AppChronoMix() {
   const [events, setEvents] = useState([]);
-  const [validated, setValidated] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [gameWon, setGameWon] = useState(false);
   const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "light");
 
-    useEffect(() => {
+  useEffect(() => {
     startNewGame();
-    }, []);
-    useEffect(() => {
-      document.documentElement.setAttribute(
-          "data-theme",
-          theme === "dark" ? "dark" : "light"
-      );
-      localStorage.setItem("theme", theme);
-      }, [theme]);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute(
+      "data-theme",
+      theme === "dark" ? "dark" : "light"
+    );
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
   const checkOrder = () => {
     // 1️⃣ cartes placées dans les slots
@@ -30,7 +30,6 @@ export default function AppChronoMix() {
     // 2️⃣ sécurité : toutes les cases doivent être remplies
     if (placed.length !== 5) {
       setGameWon(false);
-      setValidated(true);
       setShowPopup(true);
       return;
     }
@@ -63,11 +62,8 @@ export default function AppChronoMix() {
 
     setEvents(newEvents);
     setGameWon(isCorrect);
-    setValidated(true);
     setShowPopup(true);
   };
-
-
 
   const startNewGame = () => {
     const shuffled = [...chronomixEvents]
@@ -76,33 +72,31 @@ export default function AppChronoMix() {
       .map(e => ({ ...e, position: null }));
 
     setEvents(shuffled);
-    setValidated(false);
     setGameWon(false);
     setShowPopup(false);
   };
-
-
 
   return (
     <div className="app">
       <div className="header">
         <div className="title">
-            <div className="logo">CH</div>
-            <div>
+          <div className="logo">CH</div>
+          <div>
             <div style={{ fontSize: 18, fontWeight: 700 }}>Chronoly</div>
-            <div style={{ fontSize: 12, color: "var(--muted)" }}>Remets les événements dans l’ordre chronologique</div>
+            <div style={{ fontSize: 12, color: "var(--muted)" }}>
+              Remets les événements dans l’ordre chronologique
             </div>
+          </div>
         </div>
 
         <div className="controls">
-            <button
+          <button
             className="ghost"
             onClick={() => setTheme(prev => prev === "dark" ? "light" : "dark")}
-            >
+          >
             {theme === "dark" ? "Clair" : "Sombre"}
-            </button>
+          </button>
         </div>
-
       </div>
 
       <ChronoBoard items={events} setItems={setEvents} />
@@ -111,29 +105,28 @@ export default function AppChronoMix() {
 
       {showPopup && (
         <div className="modalOverlay">
-            <div className="modal">
+          <div className="modal">
             <h2 style={{ marginTop: 0 }}>
-                {gameWon ? "🎉 Bravo !" : "❌ Perdu"}
+              {gameWon ? "🎉 Bravo !" : "❌ Perdu"}
             </h2>
 
             <p>
-                {gameWon
+              {gameWon
                 ? "Tu as remis les événements dans le bon ordre."
                 : "L’ordre chronologique n’est pas correct."}
             </p>
 
             <div style={{ display: "flex", gap: 8, justifyContent: "center", marginTop: 12 }}>
-                <button className="primary" onClick={startNewGame}>
+              <button className="primary" onClick={startNewGame}>
                 Rejouer
-                </button>
-                <button className="ghost" onClick={() => setShowPopup(false)}>
+              </button>
+              <button className="ghost" onClick={() => setShowPopup(false)}>
                 Fermer
-                </button>
+              </button>
             </div>
-            </div>
+          </div>
         </div>
-        )}
-
+      )}
     </div>
   );
 }
