@@ -54,13 +54,13 @@ body.bg-whoami {
   background-image: url("/src/datasets/whoiam.png");
 }
 
-#root {
+/* #root {
   height: 100%;
-}
+} */
 
 .app {
   max-width: 900px;
-  margin: 28px auto;
+  margin: 70px auto;
   padding: 50px;
   border-radius: 12px;
   background-color: var(--bg-alpha); /* voile semi-transparent pour lisibilité */

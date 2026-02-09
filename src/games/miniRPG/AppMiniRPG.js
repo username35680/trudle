@@ -17,7 +17,7 @@ export default function AppMiniRPG() {
   const [frame, setFrame] = useState(0);
   const [moving, setMoving] = useState(false);
   const [queuedDir, setQueuedDir] = useState(null);
-  const [action, setAction] = useState("idle"); // idle | walk | attack
+  const [action, setAction] = useState("idle");
 
   const requestRef = useRef();
   const lastTimeRef = useRef(0);
@@ -189,6 +189,7 @@ export default function AppMiniRPG() {
   const TILE_POSITIONS = {
     ".": { x: 1, y: 2 }, 
     "#": { x: 10, y: 7 },
+    "+": { x: 7, y: 1 }, 
     "-": { x: 33, y: 10},
     "_": { x: 32, y: 10},
     "&": { x: 33, y: 11},
