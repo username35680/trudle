@@ -1,0 +1,15 @@
+{
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "trudle.vercel.app"
+        }
+      ],
+      "destination": "https://trudle.oger.site/:path*",
+      "permanent": true
+    }
+  ]
+}
