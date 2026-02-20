@@ -1,9 +1,20 @@
 import React from "react";
 import "./HomePage.css";
+import { Helmet } from "react-helmet-async";
 
 export default function HomePage({ onSelectGame }) {
   return (
     <div className="trudle-root">
+      
+      {/* SEO */}
+      <Helmet>
+        <title>Trudle — Jeux éducatifs et ludiques en ligne</title>
+        <meta
+          name="description"
+          content="Trudle est une plateforme de jeux à thème pour apprendre en s’amusant : ChronoMix, Qui suis-je, Mini RPG, quiz pays et animés."
+        />
+      </Helmet>
+
       {/* background image */}
       <div
         className="trudle-map"
@@ -66,6 +77,28 @@ export default function HomePage({ onSelectGame }) {
           </button>
 
         </section>
+
+        <section className="seo-content">
+          <h2>Jeux éducatifs et ludiques en ligne</h2>
+          <p>
+            Trudle est une plateforme de jeux à thème conçue pour apprendre en
+            s’amusant. Explore des jeux comme ChronoMix, Qui suis-je,
+            Mini RPG ou encore des quiz sur les pays et les animés.
+          </p>
+
+          <p>
+            Chaque jeu stimule la mémoire, la logique et la culture générale,
+            seul ou entre amis.
+          </p>
+        </section>
+        {/* <footer className="site-footer">
+          <p>© {new Date().getFullYear()} Trudle</p>
+          <nav>
+            <a href="/mentions-legales">Mentions légales</a>
+            <a href="/confidentialite">Confidentialité</a>
+            <a href="/contact">Contact</a>
+          </nav>
+        </footer> */}
       </main>
     </div>
   );
