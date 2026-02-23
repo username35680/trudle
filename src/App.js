@@ -1,7 +1,6 @@
 import React, {useEffect, useState } from "react";
 import HomePage from "./HomePage";
 import TrudleHeader from "./TrudleHeader";
-import { supabase } from './supabaseClient'
 // ton jeu existant (déplace-le sous src/games/country/AppCountry.js ou adapte l'import)
 import AppCountry from "./games/AppCountry"; 
 import AppAnime from "./games/AppAnime"; 
