@@ -222,7 +222,7 @@ button.ghost{
   background:var(--red);
 }
 .box.neutral{
-  background:var(--neutral);
+  background:var(--red);
 }
 
 /* Footer / meta */

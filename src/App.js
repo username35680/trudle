@@ -41,28 +41,6 @@ export default function App() {
     }
   }, [currentGame]);
 
-  useEffect(() => {
-    const testConnection = async () => {
-      const { data, error } = await supabase
-        .from('scores')
-        .select('*')
-        .limit(1)
-
-      if (error) {
-        console.error("❌ Supabase erreur :", error.message)
-      } else {
-        console.log("✅ Connecté à Supabase :", data)
-      }
-    }
-
-    testConnection()
-  }, [])
-
-console.log(
-  process.env.REACT_APP_SUPABASE_URL,
-  process.env.REACT_APP_SUPABASE_ANON_KEY
-);
-
   return (
     <div className="app-root">
       <TrudleHeader onHomeClick={goHome} games={games} onSelectGame={setCurrentGame} />

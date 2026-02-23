@@ -4,6 +4,7 @@ import GuessInput from "../component/GuessInput";
 import GuessList from "../component/GuessList";
 import HelpModal from "../component/HelpModal";
 import { getRandomCountry, getHints, normalize } from "../utils/gameUtils";
+import { supabase } from "../supabaseClient";
 
 function App() {
   const [countries, setCountries] = useState([]);
@@ -24,29 +25,27 @@ function App() {
 
   useEffect(() => {
     setLoading(true);
-    fetch("https://restcountries.com/v3.1/all?fields=name,translations,region,population,area,borders,flags")
-      .then(res => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
-      .then(data => {
+    supabase
+      .from("pays") // nom de ta table
+      .select("*")
+      .then(({ data, error }) => {
+        if (error) {
+          console.error("Supabase fetch error", error);
+          setLoading(false);
+          return;
+        }
+        // map pour garder le même format que précédemment
         const mapped = (data || []).map(c => ({
-          name: c.translations?.fra?.common || c.name?.common || "Unknown",
-          englishName: c.name?.common || "Unknown",
-          continent: c.region || "Unknown",
-          population: c.population || 0,
-          area: c.area || 0,
-          borders: c.borders ? c.borders.length : 0,
-          flag: c.flags?.png || c.flags?.svg || null
+          name: c.Name,            // colonne 'nom' dans ta table
+          continent: c.Continent || "Unknown",
+          population: c.Population || 0,
+          area: c.Area || 0,
+          borders: c.Borders,
+          flag: c.Flag || null
         }));
 
         setCountries(mapped);
-        const random = getRandomCountry(mapped);
-        setTarget(random);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error("fetch error", err);
+        setTarget(getRandomCountry(mapped));
         setLoading(false);
       });
   }, []);

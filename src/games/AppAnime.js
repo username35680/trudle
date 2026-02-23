@@ -60,7 +60,6 @@ export default function AppAnime() {
         const cached = localStorage.getItem(ANIME_CACHE_KEY);
         if (cached) {
           const parsed = JSON.parse(cached);
-          console.log("Animés chargés depuis le cache :", parsed.length);
 
           setAnimeList(parsed);
           setTarget(parsed[Math.floor(Math.random() * parsed.length)]);
@@ -115,8 +114,6 @@ export default function AppAnime() {
           allAnime = [...allAnime, ...pageData];
           page++;
         }
-
-        console.log("Animés chargés depuis l’API :", allAnime.length);
 
         // 💾 3️⃣ Sauvegarde en cache
         localStorage.setItem(ANIME_CACHE_KEY, JSON.stringify(allAnime));
