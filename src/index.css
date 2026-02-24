@@ -1,12 +1,12 @@
 :root{
-  --bg:#ffffff;
-  --bg-alpha: rgba(255,255,255,0.98);
+  --bg:#bdbbbb;
+  --bg-alpha: rgba(245, 244, 244, 0.98);
   --card:#f7f7f7;
   --text:#111;
   --muted:#666;
   --accent:#2b8aef;
-  --green:#91f48a;
-  --red:#f29999;
+  --green:#1ab60f;
+  --red:#e04a4a;
   --neutral:#eeeeee;
 }
 

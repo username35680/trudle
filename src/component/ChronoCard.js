@@ -1,15 +1,14 @@
-import { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
 export default function ChronoCard({ event }) {
-  const [flipped, setFlipped] = useState(false);
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: event.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition
+    transition,
+    cursor: 'grab'
   };
 
   return (
@@ -18,8 +17,7 @@ export default function ChronoCard({ event }) {
       style={style}
       {...attributes}
       {...listeners}
-      className={`chronoCard ${flipped ? "flipped" : ""}`}
-      onPointerUp={() => setFlipped(f => !f)}
+      className={`chronoCard simple ${event.status || ""}`}
     >
       <div className="chronoCardInner">
         <div className={`chronoCardFront ${event.status || ""}`}>
@@ -33,4 +31,3 @@ export default function ChronoCard({ event }) {
     </div>
   );
 }
-
