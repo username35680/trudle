@@ -14,30 +14,32 @@ export default function ChronoBoard({ items, setItems }) {
     .sort((a, b) => a.val - b.val)
     .map(e => e.dateLabel);
 
- const handleDragEnd = ({ active, over }) => {
+  const handleDragEnd = ({ active, over }) => {
+    // 1. Sécurité : si on lâche dans le vide
     if (!over) return;
 
-    // Conversion explicite en string pour éviter l'erreur
-    const overId = String(over.id); 
+    // 2. Conversion forcée pour éviter l'erreur .startsWith
+    const activeId = String(active.id);
+    const overId = String(over.id);
 
-    setItems(prev => {
-      const dragged = prev.find(e => e.id === active.id);
+    setItems((prev) => {
+      const dragged = prev.find((e) => String(e.id) === activeId);
       if (!dragged) return prev;
 
-      // Cas 1 : On dépose sur un slot (en bas)
-      // On utilise overId au lieu de over.id
+      // Cas 1 : Dépôt sur un slot
       if (overId.startsWith("slot-")) {
-        const slotIndex = Number(overId.split("-")[1]);
+        const slotIndex = parseInt(overId.split("-")[1], 10);
         
-        // Empêcher de poser si le slot est déjà pris
-        if (prev.some(e => e.position === slotIndex && e.id !== active.id)) return prev;
+        // Vérifier si le slot est occupé
+        const isOccupied = prev.some(e => e.position === slotIndex && String(e.id) !== activeId);
+        if (isOccupied) return prev;
 
-        return prev.map(e => e.id === dragged.id ? { ...e, position: slotIndex } : e);
+        return prev.map(e => String(e.id) === activeId ? { ...e, position: slotIndex } : e);
       }
 
-      // Cas 2 : On remet la carte dans la zone de pioche (en haut)
+      // Cas 2 : Retour à la pioche
       if (overId === "top-area") {
-        return prev.map(e => e.id === dragged.id ? { ...e, position: null } : e);
+        return prev.map(e => String(e.id) === activeId ? { ...e, position: null } : e);
       }
 
       return prev;
