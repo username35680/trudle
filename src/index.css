@@ -7,6 +7,7 @@
   --accent:#2b8aef;
   --green:#1ab60f;
   --red:#e04a4a;
+  --orange: #ff9800;
   --neutral:#eeeeee;
 }
 
@@ -19,6 +20,7 @@
   --accent:#4aa3ff;
   --green:#183f2a;
   --red:#4a1f1f;
+  --orange: #915700;
   --neutral:#1b2430;
 }
 
@@ -221,8 +223,20 @@ button.ghost{
 .box.red{
   background:var(--red);
 }
+.box.orange{
+  background:var(--orange);
+}
 .box.neutral{
   background:var(--red);
+}
+.label {
+  font-size: 12px;
+  opacity: 0.8;
+  margin-bottom: 4px;
+}
+
+.value {
+  font-weight: 600;
 }
 
 /* Footer / meta */

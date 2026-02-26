@@ -53,14 +53,19 @@ export default function GuessInput({ onGuess, disabled, countries, guesses = [] 
       .toLowerCase();
 
     const filtered = (countries || [])
-    .filter((c) =>
-      c.name
+    .filter((c) => {
+      // On vérifie que c.name existe bien pour éviter les erreurs
+      if (!c.name) return false;
+
+      const nameNormalized = c.name
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
-        .toLowerCase()
-        .includes(normalizedVal)
-    )
-    .filter(c => !guesses.some(g => g.name === c.name));
+        .toLowerCase();
+
+      return nameNormalized.includes(normalizedVal);
+    })
+    .filter(c => !guesses.some(g => g.name === c.name))
+    .slice(0, 8); // Optionnel : limite à 8 pour ne pas envahir l'écran
 
 
     setSuggestions(filtered);

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import GuessInput from "../component/GuessInput";
 import GuessListAnime from "../component/GuessListAnime";
-import { getAnimeHints, normalize } from "../utils/gameUtils";
-
+import { normalize } from "../utils/gameUtils";
+import { supabase } from "../supabaseClient";
 
 export default function AppAnime() {
   const [animeList, setAnimeList] = useState([]);
@@ -10,266 +10,186 @@ export default function AppAnime() {
   const [target, setTarget] = useState(null);
   const [guesses, setGuesses] = useState([]);
   const [gameWon, setGameWon] = useState(false);
-  const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "light");
-  const [showImage, setShowImage] = useState(false);
-  const [synopsisUnlocked, setSynopsisUnlocked] = useState(false);
-  const [imageUnlocked, setImageUnlocked] = useState(false);
-  const [showSynopsis, setShowSynopsis] = useState(false);
-  const [showPopup, setShowPopup] = useState(false);
   const [gameOver, setGameOver] = useState(false);
-  const ANIME_CACHE_KEY = "animeList_v1";
+  const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "light");
+  
+  const [showImage, setShowImage] = useState(false);
+  const [showSynopsis, setShowSynopsis] = useState(false);
+  const [imageUnlocked, setImageUnlocked] = useState(false);
+  const [synopsisUnlocked, setSynopsisUnlocked] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+
+  // Initialisation du thème
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  // Chargement des données depuis Supabase
+  useEffect(() => {
+    async function loadData() {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("anime") // Remplace par le nom exact de ta table
+        .select("*");
+
+      if (error) {
+        console.error("Erreur Supabase:", error);
+      } else {
+        console.log(data)
+        const mapped = data.map(a => ({
+          id: a.anime_id,
+          name: a["name"], // Correspond à ton script de nettoyage
+          genres: a.genres ? a.genres.split(",").map(g => g.trim()) : [],
+          episodes: parseInt(a.episodes) || 0,
+          aired: parseInt(a.aired) || 0,
+          studios: a.studios ? a.studios.split(",").map(s => s.trim()) : [],
+          image: a["image"],
+          synopsis: a.synopsis
+        }));
+        setAnimeList(mapped);
+        setTarget(mapped[Math.floor(Math.random() * mapped.length)]);
+      }
+      setLoading(false);
+    }
+    loadData();
+  }, []);
+
+  const handleGuess = (name) => {
+    if (gameWon || gameOver || !target) return;
+
+    const normalizedInput = normalize(name);
+    const found = animeList.find(a => normalize(a.name) === normalizedInput);
+
+    if (!found) {
+      alert("Animé non trouvé !");
+      return;
+    }
+
+    // --- LOGIQUE DES HINTS ---
+    const checkArray = (targetArr, foundArr) => {
+      const isExact = JSON.stringify(targetArr.sort()) === JSON.stringify(foundArr.sort());
+      const hasPartial = foundArr.some(item => targetArr.includes(item));
+      if (isExact) return "correct"; // Vert
+      if (hasPartial) return "partial"; // Orange
+      return "incorrect"; // Rouge
+    };
+
+    const hint = {
+      name: found.name === target.name,
+      year: {
+        value: found.aired,
+        status: found.aired === target.aired ? "correct" : "incorrect",
+        arrow: found.aired > target.aired ? "↓" : (found.aired < target.aired ? "↑" : "")
+      },
+      episodes: {
+        value: found.episodes === 0 ? "En cours" : found.episodes,
+        status: found.episodes === target.episodes ? "correct" : "incorrect",
+        // On n'affiche la flèche que si les deux ont un nombre d'épisodes défini
+        arrow: (found.episodes === 0 || target.episodes === 0) 
+          ? "" 
+          : (found.episodes > target.episodes ? "↓" : "↑")
+      },
+      genres: {
+        value: found.genres.join(", "),
+        status: checkArray(target.genres, found.genres)
+      },
+      studios: {
+        value: found.studios.join(", "),
+        status: checkArray(target.studios, found.studios)
+      }
+    };
+
+    const entry = { ...found, hint };
+    const newGuesses = [...guesses, entry];
+    setGuesses(newGuesses);
+
+    // Déblocage indices
+    if (newGuesses.length >= 3) setImageUnlocked(true);
+    if (newGuesses.length >= 5) setSynopsisUnlocked(true);
+
+    if (found.name === target.name) {
+      setGameWon(true);
+      setShowImage(true);
+      setShowSynopsis(true);
+      setTimeout(() => setShowPopup(true), 500);
+    }
+  };
+
+  const handleReplay = () => {
+    setGuesses([]);
+    setGameWon(false);
+    setGameOver(false);
+    setImageUnlocked(false);
+    setSynopsisUnlocked(false);
+    setShowImage(false);
+    setShowSynopsis(false);
+    setShowPopup(false);
+    setTarget(animeList[Math.floor(Math.random() * animeList.length)]);
+  };
 
   const handleGiveUp = () => {
-    if (!target) return;
-
     setGameOver(true);
     setShowImage(true);
     setShowSynopsis(true);
     setShowPopup(true);
   };
 
-
-  const handleReplay = () => {
-    // reset du jeu
-    setGuesses([]);
-    setGameWon(false);
-    setGameOver(false);
-    setSynopsisUnlocked(false);
-    setImageUnlocked(false);
-    setShowImage(false);
-    setShowSynopsis(false);
-    setShowPopup(false);
-
-    // choisir un nouvel anime aléatoire
-    setTarget(animeList[Math.floor(Math.random() * animeList.length)]);
-  };
-
-  useEffect(() => {
-    document.documentElement.setAttribute(
-        "data-theme",
-        theme === "dark" ? "dark" : "light"
-    );
-    localStorage.setItem("theme", theme);
-    }, [theme]);
-
-    useEffect(() => {
-      async function load() {
-        setLoading(true);
-
-        // 🔥 1️⃣ Vérifie le cache
-        const cached = localStorage.getItem(ANIME_CACHE_KEY);
-        if (cached) {
-          const parsed = JSON.parse(cached);
-
-          setAnimeList(parsed);
-          setTarget(parsed[Math.floor(Math.random() * parsed.length)]);
-          setLoading(false);
-          return;
-        }
-
-        // 🔄 2️⃣ Sinon → fetch API
-        let allAnime = [];
-        let page = 1;
-        const perPage = 50;
-        const maxPages = 4;
-
-        while (page <= maxPages) {
-          const query = `
-            query ($page: Int, $perPage: Int) {
-              Page(page: $page, perPage: $perPage) {
-                media(type: ANIME, sort: POPULARITY_DESC) {
-                  title { romaji english native }
-                  description
-                  episodes
-                  genres
-                  startDate { year }
-                  coverImage { medium }
-                  popularity
-                }
-              }
-            }
-          `;
-
-          const response = await fetch("https://graphql.anilist.co", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              query,
-              variables: { page, perPage }
-            })
-          });
-
-          const json = await response.json();
-
-          const pageData = json.data.Page.media.map(a => ({
-            name: a.title.english || a.title.romaji || a.title.native,
-            year: a.startDate.year || 0,
-            episodes: a.episodes ?? null,
-            genre: a.genres?.[0] || "Inconnu",
-            image: a.coverImage.medium,
-            popularity: a.popularity || 0,
-            synopsis: cleanSynopsis(a.description)
-          }));
-
-          allAnime = [...allAnime, ...pageData];
-          page++;
-        }
-
-        // 💾 3️⃣ Sauvegarde en cache
-        localStorage.setItem(ANIME_CACHE_KEY, JSON.stringify(allAnime));
-
-        setAnimeList(allAnime);
-        setTarget(allAnime[Math.floor(Math.random() * allAnime.length)]);
-        setLoading(false);
-      }
-
-      load();
-    }, []);
-
-
-
-const handleGuess = (name) => {
-  if (gameWon || gameOver || !target) return;
-
-  const normalized = normalize(name);
-  const found = animeList.find(a => normalize(a.name) === normalized);
-  if (!found) {
-    alert("Animé non trouvé !");
-    return;
-  }
-
-  // 🔹 Popularité
-  const maxPopularity = Math.max(...animeList.map(a => a.popularity));
-  const scalePopularity = anime => Math.ceil((anime.popularity / maxPopularity) * 10);
-  const targetPopularity = scalePopularity(target);
-  const foundPopularity = scalePopularity(found);
-
-  const popularityHint = {
-    value: foundPopularity,
-    equal: foundPopularity === targetPopularity,
-    arrow: foundPopularity > targetPopularity ? "↓" : (foundPopularity < targetPopularity ? "↑" : "=")
-  };
-
-  // 🔹 Autres hints
-  const hint = {
-    ...getAnimeHints(target, found),
-    popularity: popularityHint
-  };
-
-  const entry = { ...found, hint };
-
-  setGuesses(prev => {
-    const next = [...prev, entry];
-    if (next.length >= 5) setSynopsisUnlocked(true);
-    if (next.length >= 3) setImageUnlocked(true);
-    return next;
-  });
-
-  if (found.name === target.name) {
-    setGameWon(true);
-    setShowPopup(true);
-  }
-};
-
-function cleanSynopsis(text = "") {
-  const noHtml = text.replace(/<[^>]+>/g, "");
-  return noHtml.length > 220
-    ? noHtml.slice(0, 220) + "…"
-    : noHtml;
-}
-
-
-
-  if (loading) return <div>Chargement des animés...</div>;
+  if (loading) return <div className="loading">Chargement de la base de données...</div>;
 
   return (
     <div className="app">
       <div className="header">
         <div className="title">
-            <div className="logo">AN</div>
-            <div>
+          <div className="logo">AN</div>
+          <div>
             <div style={{ fontSize: 18, fontWeight: 700 }}>Animely</div>
             <div style={{ fontSize: 12, color: "var(--muted)" }}>Devine l'animé</div>
-            </div>
+          </div>
         </div>
-
         <div className="controls">
-            <button
-            className="ghost"
-            onClick={() => setTheme(prev => prev === "dark" ? "light" : "dark")}
-            >
+          <button className="ghost" onClick={() => setTheme(t => t === "dark" ? "light" : "dark")}>
             {theme === "dark" ? "Clair" : "Sombre"}
-            </button>
-            <button
-            className="ghost"
-            onClick={handleGiveUp}
-            disabled={gameWon || gameOver}
-          >
-            Abandonner
           </button>
+          <button className="ghost" onClick={handleGiveUp} disabled={gameWon || gameOver}>Abandonner</button>
         </div>
+      </div>
 
-      </div>
-    
-      <GuessInput
-        onGuess={handleGuess}
-        disabled={gameWon}
-        countries={animeList}
-        guesses={guesses} // autocomplete OK
-      />
+      <GuessInput onGuess={handleGuess} disabled={gameWon || gameOver} countries={animeList} guesses={guesses} />
+
       <div className="hintsRow">
-        {/* Indice image */}
-        <div
-          className={`hintBox ${imageUnlocked ? "unlocked" : ""}`}
-          onClick={() => imageUnlocked && setShowImage(s => !s)}
-        >
-          {imageUnlocked
-            ? "Indice : image (cliquer)"
-            : "Indice image — 3 essais"}
+        <div className={`hintBox ${imageUnlocked ? "unlocked" : ""}`} onClick={() => imageUnlocked && setShowImage(!showImage)}>
+          {imageUnlocked ? "Affiche (Cliquer)" : "Image : 3 essais"}
         </div>
-        {/* Indice synopsis */}
-        <div
-          className={`hintBox ${synopsisUnlocked ? "unlocked" : ""}`}
-          onClick={() => synopsisUnlocked && setShowSynopsis(s => !s)}
-        >
-          {synopsisUnlocked
-            ? "Indice : synopsis (cliquer)"
-            : "Indice synopsis — 5 essais"}
+        <div className={`hintBox ${synopsisUnlocked ? "unlocked" : ""}`} onClick={() => synopsisUnlocked && setShowSynopsis(!showSynopsis)}>
+          {synopsisUnlocked ? "Synopsis (Cliquer)" : "Synopsis : 5 essais"}
         </div>
       </div>
-      {showSynopsis && target?.synopsis && (
+
+      {showSynopsis && (
         <div className="hintReveal">
           <div className="hintTitle">Synopsis</div>
-          <div className="hintText">{target.synopsis}</div>
+          <div className="hintText">{target?.synopsis}</div>
         </div>
       )}
 
-      {showImage && target?.image && (
-        <div className="hintReveal">
-          <div className="hintTitle">Affiche de l’animé</div>
-          <img
-            src={target.image}
-            alt="anime cover"
-            style={{ borderRadius: 8, maxWidth: 220, filter: (gameWon || gameOver) ? "none" : "blur(4px)",}}
-          />
+      {showImage && (
+        <div className="hintReveal" style={{ textAlign: "center" }}>
+          <img src={target?.image} alt="cover" style={{ borderRadius: 8, maxWidth: 200, filter: (gameWon || gameOver) ? "none" : "blur(5px)" }} />
         </div>
       )}
 
       {showPopup && (
         <div className="modalOverlay">
           <div className="modal">
-            <h2 style={{ marginTop: 0 }}>
-              {gameWon ? "🎉 Bravo !" : "😢 Partie abandonnée"}
-            </h2>
-            <p>Le anime était <strong>{target?.name}</strong>.</p>
-            <div style={{ display: "flex", gap: 8, justifyContent: "center", marginTop: 12 }}>
-              <button className="primary" onClick={handleReplay}>Rejouer</button>
-              <button className="ghost" onClick={() => setShowPopup(false)}>Fermer</button>
-            </div>
+            <h2>{gameWon ? "🎉 Bravo !" : "😢 Perdu"}</h2>
+            <p>C'était <strong>{target?.name}</strong></p>
+            <button className="primary" onClick={handleReplay}>Rejouer</button>
+            <button className="ghost" onClick={() => setShowPopup(false)}>Fermer</button>
           </div>
         </div>
       )}
-  
+
       <GuessListAnime guesses={guesses} />
     </div>
   );

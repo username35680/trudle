@@ -114,7 +114,7 @@ function App() {
           <div className="logo">CL</div>
           <div>
             <div style={{fontSize:18,fontWeight:700}}>Countryle</div>
-            <div style={{fontSize:12,color:"var(--muted)"}}>Jeu quotidien — style minimal</div>
+            <div style={{fontSize:12,color:"var(--muted)"}}>Devine le pays</div>
           </div>
         </div>
 
